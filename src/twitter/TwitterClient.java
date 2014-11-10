@@ -1,8 +1,8 @@
 package twitter;
 
 public interface TwitterClient {
-	public String getStatus();
+	public Object getStatus();
 	public void postStatus();
-	public String getUserTimeline();
+	public List getUserTimeline();
 
 }

@@ -9,7 +9,6 @@ public class CallTwitterClient  {
 		   	}
 		
 		String enter = result.toString();
-		//String enter = "--cmd=getStatus--id=545745243";
 		if (enter.indexOf("getStatus")>0) {
 			String cmd = "getStatus";
 			int start = enter.indexOf("id")+3;

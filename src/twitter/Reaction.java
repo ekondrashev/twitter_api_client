@@ -1,45 +1,41 @@
 package twitter;
 
+import java.util.Set;
+
 public class Reaction {
 	private int favoriteCount;
-	private String favorited;
+	private Set<String> favorited;
 	private int retweetCount;
-	private String retvited;
-	private String comments;
+	private Set<String> retvited;
+	private Set<String> comments;
 	
 	public void setFavoriteCount (int favoriteCount) {
-		if (favoriteCount>0) { 
-			this.favoriteCount=favoriteCount;} else {System.out.println("invalid favoriteCount");}
+		if (favoriteCount>=0) { 
+			this.favoriteCount=favoriteCount;} else {throw new IllegalArgumentException ("Illegal value of argument");}
 	}
 	
-	public void setFavorited (String favorited) {
-		if (favorited instanceof String) {
-			if (favorited!=null) {this.favorited=favorited;}
-		} else {System.out.println("invalid favorited");} 
+	public void setFavorited (Set<String> favorited) {
+		this.favorited=favorited;
 	}
 	
 	public void setRetweetCount (int retweetCount) {
-		if (retweetCount>0) { 
-			this.retweetCount=retweetCount;} else {System.out.println("invalid retweetCount");}
+		if (retweetCount>=0) { 
+			this.retweetCount=retweetCount;} else {throw new IllegalArgumentException ("Illegal value of argument");}
 	}
 	
-	public void setRetvited (String retvited) {
-		if (retvited instanceof String) {
-			if (retvited!=null) {this.retvited=retvited;}
-		} else {System.out.println("invalid retvited");} 
+	public void setRetvited (Set<String> retvited) {
+		this.retvited=retvited; 
 	}
 	
-	public void setComments (String comments) {
-		if (comments instanceof String) {
-			if (comments!=null) {this.comments=comments;}
-		} else {System.out.println("invalid comments");} 
+	public void setComments (Set<String> comments) {
+		this.comments=comments;
 	}
 	
 	public int getFavoriteCount () {
 		return favoriteCount;
 	}
 	
-	public String getFavorited () {
+	public Set<String> getFavorited () {
 		return favorited;
 	}
 	
@@ -47,11 +43,11 @@ public class Reaction {
 		return retweetCount;
 	}
 	
-	public String getRetvited () {
+	public Set<String> getRetvited () {
 		return retvited;
 	}
 	
-	public String getComments () {
+	public Set<String> getComments () {
 		return comments; 
 	}
 	

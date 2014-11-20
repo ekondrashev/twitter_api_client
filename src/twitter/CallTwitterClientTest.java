@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 public class CallTwitterClientTest extends TestCase {
 	
-	public void TestCallTwitterClient () {
+		public void testCallTwitterClient () {
 		String test  = ("--cmd=getStatus--id=57687678");
 		
 		Set <String> actual = CallTwitterClient.extractCommands(test);
@@ -18,6 +18,7 @@ public class CallTwitterClientTest extends TestCase {
 		expected.add("57687678");
 		
 		assertEquals(actual, expected);
+		
 				
 	}
 

@@ -1,64 +1,59 @@
 package twitter;
 
+import java.util.Date;
+import java.util.Set;
+import java.util.SimpleTimeZone;
+
 public class UserProfile {
 	private int userID;
 	private String userName;
 	private String language;
 	private int statusesCount;
-	private String userDate; // Date of profile creation
-	private String userTimezone;
+	private Date userDate; // Date of profile creation
+	private SimpleTimeZone userTimezone;
 	private int followersCount;
-	private String folowing;
+	private Set<String> folowing;
 	private int friendsCount;
-	
+		
 	public void setUserID (int userID) {
 		if (userID>0) { 
-			this.userID=userID;} else {System.out.println("invalid userID");}
+			this.userID=userID;} else {throw new IllegalArgumentException ("Illegal value of argument");}
 	}
 	
 	public void setUserName (String userName) {
-		if (userName instanceof String) {
-			if (userName!=null) {this.userName=userName;}
-		} else {System.out.println("invalid userName");} 
+		if (userName!=null && !userName.isEmpty()) {this.userName=userName;}
+		else {throw new IllegalArgumentException ("Illegal value of argument");} 
 	}
 	
-	public void setLanguage (String language) {
-		if (language instanceof String) {
-			if (language!=null) {this.language=language;}
-		} else {System.out.println("invalid language");} 
+	public void setLanguage (String language){
+		this.language=language;
 	}
 	
 	public void setStatusesCount (int statusesCount) {
-		if (statusesCount>0) { 
-			this.statusesCount=statusesCount;} else {System.out.println("invalid statusesCount");}
+		this.statusesCount=statusesCount;
 	}
 	
-	public void setUserDate (String userDate) {
-		if (userDate instanceof String) {
-			if (userDate!=null) {this.userDate=userDate;}
-		} else {System.out.println("invalid userDate");} 
+	public void setUserDate (Date userDate) {
+		if (userDate!=null) {this.userDate=userDate;}
+		else {throw new IllegalArgumentException ("Illegal value of argument");} 
 	}
 	
-	public void setUserTimezone (String userTimezone) {
-		if (userTimezone instanceof String) {
-			if (userTimezone!=null) {this.userTimezone=userTimezone;}
-		} else {System.out.println("invalid userTimezone");} 
+	public void setUserTimezone (SimpleTimeZone userTimezone) {
+		this.userTimezone=userTimezone;
 	}
 	
 	public void setFollowersCount (int followersCount) {
-		if (followersCount>0) { 
-			this.followersCount=followersCount;} else {System.out.println("invalid followersCount");}
+		if (followersCount>=0) { 
+			this.followersCount=followersCount;} else {throw new IllegalArgumentException ("Illegal value of argument");}
 	}
 	
-	public void setFolowing (String folowing) {
-		if (folowing instanceof String) {
-			if (folowing!=null) {this.folowing=folowing;}
-		} else {System.out.println("invalid folowing");} 
+	public void setFolowing (Set<String> folowing) {
+		this.folowing=folowing;
 	}
 	
 	public void setFriendsCount (int friendsCount) {
-		if (friendsCount>0) { 
-			this.friendsCount=friendsCount;} else {System.out.println("invalid friendsCount");}
+		if (friendsCount>=0) { 
+			this.friendsCount=friendsCount;} else {throw new IllegalArgumentException ("Illegal value of argument");}
 	}
 	
 	public int getUserID () {
@@ -77,11 +72,11 @@ public class UserProfile {
 		return statusesCount;
 	}
 	
-	public String getUserDate () {
+	public Date getUserDate () {
 		return userDate; 
 	}
 	
-	public String getUserTimezone () {
+	public SimpleTimeZone getUserTimezone () {
 		return userTimezone; 
 	}
 	
@@ -89,7 +84,7 @@ public class UserProfile {
 		return followersCount; 
 	}
 	
-	public String getFolowing () {
+	public Set<String> getFolowing () {
 		return folowing;
 	}
 	

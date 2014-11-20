@@ -1,37 +1,41 @@
 package twitter;
 
+import java.util.Date;
+import java.util.Set;
+
 public class Status {
-	private int id;
+	private int id;//Maybe better to do it as String
 	private String text;
-	private String statusDate;//Date and time of status creation
-	private Boolean media;//Presence or absence of picture, video or audio
-	private String hashtag;
+	private Date statusDate;//Date and time of status creation
+	private boolean media;//Presence or absence of picture, video or audio
+	private Set<String> hashtag;
+	private Set<Float> coordinates;
 	
 	public void setId (int id) {
 		if (id>0) { 
-			this.id=id;} else {System.out.println("invalid id");}
+			this.id=id;} else {throw new IllegalArgumentException ("Illegal value of argument");}
 	}
 	
 	public void setText (String text) {
-		if (text instanceof String) {
-			if (text!=null) {this.text=text;}
-		} else {System.out.println("invalid text");} 
+		if (text!=null && !text.isEmpty()) {this.text=text;}
+		else {throw new IllegalArgumentException ("Illegal value of argument");}
 	}
 	
-	public void setStatusDate (String statusDate) {
-		if (statusDate instanceof String) {
-			if (statusDate!=null) {this.statusDate=statusDate;}
-		} else {System.out.println("invalid statusDate");} 
+	public void setStatusDate (Date statusDate) {
+		if (statusDate!=null) {this.statusDate=statusDate;}
+		else {throw new IllegalArgumentException ("Illegal value of argument");} 
 	}
 	
-	public void setMedia (Boolean media) {
-		if (media instanceof Boolean) {
-			this.media=media;} else {System.out.println("invalid media");} 
+	public void setMedia (boolean media) {
+		this.media=media;
 	}
 	
-	public void setHashtag (String hashtag) {
-		if (hashtag instanceof String) {
-			this.hashtag=hashtag;} else {System.out.println("invalid hashtag");} 
+	public void setHashtag (Set<String> hashtag) {
+		this.hashtag=hashtag;
+	}
+	
+	public void setCoordinates (Set<Float> coordinates) {
+		this.coordinates=coordinates;
 	}
 	
 	public int getId() {
@@ -42,16 +46,20 @@ public class Status {
 		return text;
 	}
 	
-	public String getStatusDate() {
+	public Date getStatusDate() {
 		return statusDate;
 	}
 	
-	public Boolean getMedia () {
+	public boolean getMedia () {
 		return media;
 	}
 	
-	public String getHashtag() {
+	public Set<String> getHashtag() {
 		return hashtag;
+	}
+	
+	public Set<Float> getCoordinates() {
+		return coordinates;
 	}
 	
 }

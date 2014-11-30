@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CallTwitterClient {
+public class CommandLine {
 
 	public static void main(String[] args) {
 		extractCommands(args);

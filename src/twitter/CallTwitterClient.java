@@ -1,7 +1,7 @@
 package twitter;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CallTwitterClient  {
 		
@@ -14,42 +14,44 @@ public class CallTwitterClient  {
 		String enter = result.toString();
 		//String enter = ("--cmd=getStatus--id=57687678");
 		extractCommands(enter);
+		//System.out.println(enter);
 	}
-	public static  Set<String> extractCommands(String enter) {
-			Set<String> commands = new HashSet<String>();
+	public static  Map <String, String> extractCommands(String enter) {
+		
+			
+			Map <String, String> commands = new HashMap<String, String>();
 			String usage = "Usage: 1)--cmd=getStatus--id=, 2) --cmd=postStatus--text=,3)--cmd=getUserTimeLine--id=--limit=";
+			
+			
 			if (enter.indexOf("getStatus")>0) {
-			String cmd = "getStatus";
-			commands.add(cmd);
+			commands.put("cmd", "getStatus");
 			int start = enter.indexOf("id")+3;
 			// 3 is a magic number that means number of characters in phrase id=
 			int end = enter.length();
 			String id = enter.substring(start,end);
-			commands.add(id);
+			commands.put("id", id);
 			System.out.println(commands);
 				}
 			else  if (enter.indexOf("postStatus")>0) {
-				String cmd = "postStatus";
-				commands.add(cmd);
+				commands.put("cmd", "postStatus");
 				int start = enter.indexOf("text")+5;
 				// 5 is a magic number that means number of characters in phrase text=
 				int end = enter.length();
 				String text = enter.substring(start,end);
-				commands.add(text);
+				commands.put("text", text);
 					}
 				else if (enter.indexOf("getUserTimeline")>0) {
-					String cmd = "getUserTimeline";
-					commands.add(cmd);
+					commands.put("cmd", "getUserTimeline");
 					int start = enter.indexOf("id")+3;
 					//  3 is a magic number that means number of characters in phrase id=
 					int end = enter.indexOf("--limit");
 					String id = enter.substring(start,end);
-					commands.add(id);
+					commands.put("id", id);
 					int start2 = enter.indexOf("limit")+6;
 					//  6 is a magic number that means number of characters in phrase limit=
 					int end2 = enter.length();
 					String limit = enter.substring(start2,end2);;
-					commands.add(limit);
+					commands.put("limit", limit);
 						}
 						else { System.out.println(usage);}
 		

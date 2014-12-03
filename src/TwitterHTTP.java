@@ -40,13 +40,13 @@ public class TwitterHTTP {
 	      if (entity != null) {
 	        InputStream inputStream = entity.getContent();
 	        
-		     // Produce the output
-		      DataOutputStream os;
 		      
 	        try {
 	          int bytesRead = 0;
+	 	     // Produce the output
+		      DataOutputStream os;
 		        os = new DataOutputStream(
-				          new FileOutputStream("C:\\testfile.html"));
+				         new FileOutputStream("C:\\testfile.html"));
           BufferedInputStream bis = new BufferedInputStream(inputStream);
 	          while ((bytesRead = bis.read(buffer)) != -1) {
 	            String chunk = new String(buffer, 0, bytesRead);

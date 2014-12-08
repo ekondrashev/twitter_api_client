@@ -1,26 +1,29 @@
 package twitter;
 
+
 import java.io.IOException;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
 
 public class HTTPclient {
 	
-	public static void main(String[] args) throws ClientProtocolException, IOException {
+	public static void main(String[] args) throws IOException {
 		
-		CloseableHttpClient httpclient = HttpClients.createDefault();
-		HttpGet httpget = new HttpGet("http://twitter.com/euromaidan/status/540146266324602880");
-		CloseableHttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		System.out.println(response.getStatusLine());
-		System.out.println(entity.getContentLength());
-		response.close();
-		   
+		String userName = "euromaidan";
+		long id = 540146266324602880L;
+		String url = "http://twitter.com/" + userName + "/status/" + id;
+				
+		Document doc = Jsoup.connect(url).get();
+		Elements link = doc.getElementsByAttributeValue("property", "og:description");
+		String linkContent = link.attr("content");
+		linkContent = linkContent.substring(1, (linkContent.length()-1));
+			
+		System.out.println(linkContent);
+		
 	}
-
+		
+	
 }

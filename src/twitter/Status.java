@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.Set;
 
 public class Status {
-	private int id;//Maybe better to do it as String
+	private long id;//Maybe better to do it as String
 	private String text;
 	private Date statusDate;//Date and time of status creation
 	private boolean media;//Presence or absence of picture, video or audio

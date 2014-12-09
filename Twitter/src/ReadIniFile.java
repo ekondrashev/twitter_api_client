@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class ReadFileIni {
+public class ReadIniFile {
 
 	public static Map<String, String> Read() throws FileNotFoundException,
 			IOException {

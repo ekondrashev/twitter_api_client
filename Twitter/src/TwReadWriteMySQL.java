@@ -1,62 +1,91 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.HashMap;
+import java.sql.*;
+//import java.util.HashMap;
 import java.util.Map;
 
+public class TwReadWriteMySQL {
+	   // JDBC driver name and database URL
+	   static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
+	   static final String DB_URL = "jdbcmysqldb4free.nethillel2014java1";
 
-public class ReadFileIni {
+	   //  Database credentials
+	   static final String USER = "hillel2014java1";
+	   static final String PASS = "hillel2014java1";
+	   
+	
+	 public static void main(String[] args) throws SQLException, FileNotFoundException, IOException {
+	   Connection conn = null;
+	   Statement stmt = null;
+		//get params from ini file
+		
+//		ReadIniFile rf = new ReadIniFile();
+		Map <String,String> Result = ReadIniFile.Read(); 
 
-	public static Map<String, String> Read() throws FileNotFoundException,
-			IOException {
+		try{
+	      //STEP 2 Register JDBC driver
+	      Class.forName("com.mysql.jdbc.Driver");
 
-		File file = new File("D:\\MYSQl.ini");
+	      //STEP 3 Open a connection
+	      System.out.println("Connecting to database...");
+	      conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-		BufferedReader br = new BufferedReader(new InputStreamReader(
-				new FileInputStream(file), "UTF-8"));
-		String line = null;
-		Map<String, String> mySQlparam = new HashMap<String, String>();
-		while ((line = br.readLine()) != null) {
-			String result;		
-			String param ="JDBC_DRIVER=";
-			if (line.startsWith(param))
-			{
-				result = line.substring(param.length(), line.length());
-				mySQlparam.put("JDBC_DRIVER",result);
-			}				
-			param ="DB_URL=";
-			if (line.startsWith(param))
-			{
-				result = line.substring(param.length(), line.length());
-				mySQlparam.put("DB_URL",result);
-			}				
-			param ="USER=";
-			if (line.startsWith(param))
-			{
-				result = line.substring(param.length(), line.length());
-				mySQlparam.put("USER",result);
-			}				
-			param ="PASS=";
-			if (line.startsWith(param))
-			{
-				result = line.substring(param.length(), line.length());
-				mySQlparam.put("PASS",result);
-			}				
-			
-			System.out.println(line);
-		}
-		br.close();
-		return mySQlparam;
+	      //STEP 4 Execute a query
+	      System.out.println("Creating statement...");
+	      
+	      ResultSet rs = conn.getMetaData().getCatalogs();
+
+	      while (rs.next()) {
+	          System.out.println("Table name =  "+ rs.getString("TABLE_CAT") );
+	      }
+	      
+	      stmt = conn.createStatement();
+	      rs = stmt.executeQuery("SELECT * from TweeterUser;");
+	      
+	      int lastId = 0;
+	      while (rs.next()) {
+	    	  lastId = rs.getInt("id");
+	          System.out.println("id =  "+ lastId);
+	          System.out.println("name =  "+ rs.getString("name"));
+	          System.out.println("phone =  "+ rs.getString("phone"));
+	      }
+	      lastId++; // counter 
+//	      ÔËÏÂ ‰Ó·‡‚ÎÂÌËˇ ÌÓ‚ÓÈ Á‡ÔËÒË ‚ MYSQl
+          String Òommand = "INSERT INTO TweeterUser (id,name,email,phone)VALUES ("
+			+" ' + lastId + ',"
+			+" ' + Petrov+lastId+',"
+			+"' + Petrov+lastId+@levix.net',"
+			+" ' + lastId+0678925682 + ');";
+
+          stmt.executeUpdate(Òommand);
+
+	      
+	  //    STEP 6 Clean-up environment
+	      rs.close();
+	      stmt.close();
+	      conn.close();
+	   }catch(SQLException se){
+	    //  Handle errors for JDBC
+	      se.printStackTrace();
+	   }catch(ClassNotFoundException e){
+	  //    Handle errors for Class.forName
+	      e.printStackTrace();
+	   }finally{
+	      //finally block used to close resources
+	      try{
+	         if(stmt!=null)
+	            stmt.close();
+	      }catch(SQLException se2){
+	      } //nothing we can do
+	      try{
+	         if(conn!=null)
+	            conn.close();
+	      }catch(SQLException se){
+	         se.printStackTrace();
+	      }//end finally try
+	   }//end try
+	   System.out.println("Goodbye!");
 	}
-}
+	}
 
-/* –°–æ–¥–µ—Ä–∂–∞–Ω–∏–µ —Ñ–∞–π–ª–∞ D:\MYSQl.ini
-–ø–∞—Ä–∞–º–µ—Ç—Ä—ã –ø–æ–¥–∫–ª—é—á–µ–Ω–∏—è –∫ MySQl
-JDBC_DRIVER=com.mysql.jdbc.Driver  
-DB_URL=jdbc:mysql://db4free.net/hillel2014java1
-USER = hillel2014java1
-PASS = hillel2014java1
- */
+

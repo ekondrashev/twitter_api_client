@@ -1,0 +1,39 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
+public class Savefile {
+	public static void save(String args){
+		
+		String s, s2 = result;
+		BufferedReader in4 = new BufferedReader(new StringReader(s2));
+		PrintWriter out1 = null;
+	    try {
+            out1 = new PrintWriter(new BufferedWriter(new FileWriter("file.txt")));
+        } catch (IOException ex) {
+           Logger.getLogger(filelist.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (out1 != null) {
+            int lineCount = 1;
+            try {
+                while ((s = in4.readLine()) != null) {
+                    out1.println(lineCount++ + ": " + s);
+                }
+            } catch(IOException ex) {
+                Logger.getLogger(filelist.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+               out1.close();
+            }
+        }
+    }
+		
+		
+	}
+
+

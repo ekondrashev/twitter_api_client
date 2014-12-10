@@ -11,7 +11,7 @@ public class Status {
 	private Set<String> hashtag;
 	private Set<Float> coordinates;
 	
-	public void setId (int id) {
+	public void setId (long id) {
 		if (id>0) { 
 			this.id=id;} else {throw new IllegalArgumentException ("Illegal value of argument");}
 	}
@@ -38,7 +38,7 @@ public class Status {
 		this.coordinates=coordinates;
 	}
 	
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 	

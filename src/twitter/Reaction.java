@@ -3,11 +3,15 @@ package twitter;
 import java.util.Set;
 
 public class Reaction {
+	
 	private int favoriteCount;
 	private Set<String> favorited;
 	private int retweetCount;
 	private Set<String> retvited;
+	private int commentsCount;
 	private Set<String> comments;
+	private long statusId;
+	
 	
 	public void setFavoriteCount (int favoriteCount) {
 		if (favoriteCount>=0) { 
@@ -31,6 +35,18 @@ public class Reaction {
 		this.comments=comments;
 	}
 	
+	public void setCommentsCount(int commentsCount) {
+		if (favoriteCount>=0) { 
+			this.commentsCount = commentsCount;} else {throw new IllegalArgumentException ("Illegal value of argument");}
+	}
+	
+	public void setStatusId (long id) {
+		if (id>0) { 
+			this.statusId=id;} else {throw new IllegalArgumentException ("Illegal value of argument");}
+	}
+	
+	
+	
 	public int getFavoriteCount () {
 		return favoriteCount;
 	}
@@ -49,6 +65,14 @@ public class Reaction {
 	
 	public Set<String> getComments () {
 		return comments; 
+	}
+
+	public int getCommentsCount() {
+		return commentsCount;
+	}
+	
+	public long getStatusId() {
+		return statusId;
 	}
 	
 }

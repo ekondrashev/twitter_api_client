@@ -5,16 +5,15 @@ import java.util.Set;
 import java.util.SimpleTimeZone;
 
 public class UserProfile {
+	
 	private int userID;
 	private String userName;
-	private String language;
 	private int statusesCount;
-	private Date userDate; // Date of profile creation
-	private SimpleTimeZone userTimezone;
+	private Date userDate;
 	private int followersCount;
 	private Set<String> folowing;
-	private int friendsCount;
-		
+			
+	
 	public void setUserID (int userID) {
 		if (userID>0) { 
 			this.userID=userID;} else {throw new IllegalArgumentException ("Illegal value of argument");}
@@ -23,10 +22,6 @@ public class UserProfile {
 	public void setUserName (String userName) {
 		if (userName!=null && !userName.isEmpty()) {this.userName=userName;}
 		else {throw new IllegalArgumentException ("Illegal value of argument");} 
-	}
-	
-	public void setLanguage (String language){
-		this.language=language;
 	}
 	
 	public void setStatusesCount (int statusesCount) {
@@ -38,10 +33,7 @@ public class UserProfile {
 		else {throw new IllegalArgumentException ("Illegal value of argument");} 
 	}
 	
-	public void setUserTimezone (SimpleTimeZone userTimezone) {
-		this.userTimezone=userTimezone;
-	}
-	
+		
 	public void setFollowersCount (int followersCount) {
 		if (followersCount>=0) { 
 			this.followersCount=followersCount;} else {throw new IllegalArgumentException ("Illegal value of argument");}
@@ -51,10 +43,7 @@ public class UserProfile {
 		this.folowing=folowing;
 	}
 	
-	public void setFriendsCount (int friendsCount) {
-		if (friendsCount>=0) { 
-			this.friendsCount=friendsCount;} else {throw new IllegalArgumentException ("Illegal value of argument");}
-	}
+	
 	
 	public int getUserID () {
 		return userID; 
@@ -62,10 +51,6 @@ public class UserProfile {
 	
 	public String getUserName () {
 		return userName;
-	}
-	
-	public String getLanguage () {
-		return language;
 	}
 	
 	public int getStatusesCount () {
@@ -76,10 +61,6 @@ public class UserProfile {
 		return userDate; 
 	}
 	
-	public SimpleTimeZone getUserTimezone () {
-		return userTimezone; 
-	}
-	
 	public int getFollowersCount () {
 		return followersCount; 
 	}
@@ -88,8 +69,4 @@ public class UserProfile {
 		return folowing;
 	}
 	
-	public int setFriendsCount () {
-		return friendsCount; 
-	}
-		
 }

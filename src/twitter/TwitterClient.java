@@ -1,10 +1,12 @@
 package twitter;
 
-import java.awt.List;
+import java.util.List;
+
+
 
 public interface TwitterClient {
-	public Object getStatus();
-	public void postStatus();
-	public List getUserTimeline();
+	public Status getStatus(String userName, long statusId);
+	public long postStatus(String text);
+	public List <String> getUserTimeline(String userName, int limit);
 
 }

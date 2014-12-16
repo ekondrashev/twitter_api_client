@@ -1,19 +1,17 @@
 package twitter;
 
 import java.util.Date;
-import java.util.Set;
 
 public class Status {
-	private long id;//Maybe better to do it as String
-	private String text;
-	private Date statusDate;//Date and time of status creation
-	private boolean media;//Presence or absence of picture, video or audio
-	private Set<String> hashtag;
-	private Set<Float> coordinates;
 	
-	public void setId (long id) {
+	private long statusId;
+	private String text;
+	private Date statusDate;
+	private String userName;
+		
+	public void setStatusId (long id) {
 		if (id>0) { 
-			this.id=id;} else {throw new IllegalArgumentException ("Illegal value of argument");}
+			this.statusId=id;} else {throw new IllegalArgumentException ("Illegal value of argument");}
 	}
 	
 	public void setText (String text) {
@@ -26,20 +24,15 @@ public class Status {
 		else {throw new IllegalArgumentException ("Illegal value of argument");} 
 	}
 	
-	public void setMedia (boolean media) {
-		this.media=media;
+	public void setUserName (String userName) {
+		if (userName!=null && !userName.isEmpty()) {this.userName=userName;}
+		else {throw new IllegalArgumentException ("Illegal value of argument");} 
 	}
 	
-	public void setHashtag (Set<String> hashtag) {
-		this.hashtag=hashtag;
-	}
 	
-	public void setCoordinates (Set<Float> coordinates) {
-		this.coordinates=coordinates;
-	}
-	
-	public long getId() {
-		return id;
+			
+	public long getStatusId() {
+		return statusId;
 	}
 	
 	public String getText() {
@@ -50,16 +43,9 @@ public class Status {
 		return statusDate;
 	}
 	
-	public boolean getMedia () {
-		return media;
+	public String getUserName () {
+		return userName;
 	}
 	
-	public Set<String> getHashtag() {
-		return hashtag;
-	}
-	
-	public Set<Float> getCoordinates() {
-		return coordinates;
-	}
-	
+		
 }

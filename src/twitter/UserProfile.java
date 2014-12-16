@@ -2,7 +2,7 @@ package twitter;
 
 import java.util.Date;
 import java.util.Set;
-import java.util.SimpleTimeZone;
+
 
 public class UserProfile {
 	

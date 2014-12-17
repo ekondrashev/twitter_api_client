@@ -19,6 +19,12 @@ public class Dog {
 		
 	}
 	
+	@Override
+	public int hashCode(){
+			return this.weight;
+	}
+
+	
 	public int getWeight()
 	{
 		return weight;

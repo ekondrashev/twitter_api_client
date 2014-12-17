@@ -3,70 +3,63 @@ package twitter;
 
 import java.io.IOException;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpConnectionManager;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.cookie.CookiePolicy;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-import org.apache.commons.httpclient.methods.multipart.Part;
-import org.apache.commons.httpclient.methods.multipart.StringPart;
-import org.apache.http.HttpResponse;
+
+
+import org.apache.http.Header;
+import org.apache.http.HttpHost;
+import org.apache.http.ParseException;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.AuthCache;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.BasicAuthCache;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+
+
+
 
 
 public class PostTweet {
 	
-	public static void main(String[] args) throws HttpException, IOException {
-	
-	
-		  /*PostMethod filePost = new PostMethod("https://twitter.com/sessions");
-		 // filePost.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
-			
-		  Part[] parts = {
-		      new StringPart("session[username_or_email]", "KateVarlamova"),
-		      new StringPart("session[password]", "Katusha"),
-		     
-		  };
-		  filePost.setRequestEntity(
-		      new MultipartRequestEntity(parts, filePost.getParams()));
-		  
-		  HttpClient client = new HttpClient();
-		  //client.getParams().setAuthenticationPreemptive(false);
-		 int status = client.executeMethod(filePost);
-		  
-		  
-		  System.out.println(status);*/
+	public static void main(String[] args) throws ParseException, IOException {
 		
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+
+		HttpHost targetHost = new HttpHost("twitter.com", 443, "https");
+		CredentialsProvider credsProvider = new BasicCredentialsProvider();
+		credsProvider.setCredentials(
+		        new AuthScope(targetHost.getHostName(), targetHost.getPort()),
+		        new UsernamePasswordCredentials("KateVarlamova", "Katusha"));
+
 		
+		AuthCache authCache = new BasicAuthCache();
 		
+		BasicScheme basicAuth = new BasicScheme();
+		authCache.put(targetHost, basicAuth);
 		
+		HttpClientContext context = HttpClientContext.create();
+		context.setCredentialsProvider(credsProvider);
+		context.setAuthCache(authCache);
+
+		HttpGet httpget = new HttpGet("/");
+		CloseableHttpResponse response = httpclient .execute(targetHost, httpget, context);
+		Header [] headers = response.getAllHeaders();
+		for (Header header: headers) {
+			System.out.println(header.getName() + " : " + header.getValue());
+			}
 		
-		PostMethod method = new PostMethod("https://twitter.com/sessions");
-	
-	HttpConnectionManager connectionManager =  new MultiThreadedHttpConnectionManager();
-	
-	
-	NameValuePair userName = new NameValuePair ("username_or_email", "KateVarlamova");
-	NameValuePair password = new NameValuePair ("password", "Katusha");
-	
-	NameValuePair[] parametersBody = {userName, password};
-	
-	method.setRequestBody(parametersBody);
-	method.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
-	
-	 HttpClient client = new HttpClient(connectionManager);
-	 client.getParams().setAuthenticationPreemptive(false);
-	 
-	 int status = client.executeMethod(method);
-	 
-	 System.out.println(status);
-	
+		response.close();
+		}
 	}
 	
 
-}
+
 
 
 

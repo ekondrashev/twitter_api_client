@@ -1,61 +1,69 @@
 package twitteroperation;
 
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-import twitter4j.Status;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.conf.ConfigurationBuilder;
+import org.apache.*;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+
+import org.apache.http.impl.client.HttpClients;
 
 public class TwitterOperation implements TwitterClient {
-	
-	static ConfigurationBuilder cb = new ConfigurationBuilder();
-	static TwitterFactory tf = new TwitterFactory(cb.build());
-	static twitter4j.Twitter tw = tf.getInstance();
-	static twitter4j.Status st =null;
-	
-
-	
-	public  void InitOauth()  {	
-		OauthForTwitter oauth = new OauthForTwitter();
-		cb.setDebugEnabled(true)
-			.setOAuthConsumerKey(oauth.getConsumerKey())
-			.setOAuthConsumerSecret(oauth.getConsumerKey())
-			.setOAuthAccessToken(oauth.getToken())
-			.setOAuthAccessTokenSecret(oauth.getTokenSecret()); 
+	public static void main(String []args) throws ClientProtocolException
+	{
+		 try {
+			 URL restServiceURL = new URL("https://twitter.com/dmitry_gordon");
+			 HttpURLConnection httpConnection = (HttpURLConnection) restServiceURL.openConnection();
+			 httpConnection.setRequestMethod("GET");
+			 httpConnection.setRequestProperty("Accept", "text/html;charset=UTF-8");
+			 if (httpConnection.getResponseCode() != 200) {
+				 throw new RuntimeException("HTTP GET Request Failed with Error code : " + httpConnection.getResponseCode());
+				 }
+			 BufferedReader responseBuffer = new BufferedReader(new InputStreamReader((httpConnection.getInputStream())));
+			 String output;
+			 System.out.println("Output from Server:  \n");
+			 while ((output = responseBuffer.readLine()) != null) {
+				 System.out.println(output);
+				 }
+			 httpConnection.disconnect();
+			 } catch (MalformedURLException e) {
+				 e.printStackTrace();
+				 } catch (IOException e) {
+					 e.printStackTrace();
+					 }
+		
+//	public getStatus ()
+//	{
+//		try {
+//			CloseableHttpClient httpClient = HttpClients.createDefault();;
+//			HttpGet getRequest = new HttpGet("https://twitter.com/KateVarlamova");
+//			//getRequest.addHeader("accept", "application/html");
+//			HttpResponse response = httpClient.execute(getRequest);
+//			if (response.getStatusLine().getStatusCode() != 200) {
+//			throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
+//			}
+//			BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
+//			String output;
+//			System.out.println("============Output:============");
+//			while ((output = br.readLine()) != null) {
+//			System.out.println(output);
+//			}		 
+//			httpClient.getConnectionManager().shutdown();		 
+//			} catch (ClientProtocolException e) {
+//			e.printStackTrace();		 
+//			} catch (IOException e) {
+//			e.printStackTrace();
+//			}
 			
-	}
-
-	@Override
-	public void postStatus() {
-
-			try {
-				Status stat =  tw.updateStatus("Пробный для клиента!");
-				System.out.println("Twitter updated");
-			} catch (TwitterException e) {
-				e.printStackTrace();
-			}
 		
 	}
-
-	@Override
-	public void getStatus(String username) {
-		st.getText();
 	}
 
-	@Override
-	public void getUserTimeline(String username) {
-		List<Status> statuses = null;
-		try {
-			statuses = tw.getUserTimeline(username);
-		} catch (TwitterException e) {
-			e.printStackTrace();
-		}
-		for (Status status1 : statuses)
-		{
-			System.out.println(status1.getUser().getName() + ":" + status1.getText());
-		}
-		
-	}
 
-}

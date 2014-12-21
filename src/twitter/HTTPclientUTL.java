@@ -16,7 +16,7 @@ public class HTTPclientUTL {
 	public static void main(String[] args) throws IOException {
 		
 				int limit = 5;
-				String userName = "KateVarlamova";
+				String userName = "dmitry_gordon";
 				String url = "http://twitter.com/" + userName;
 				Document doc = Jsoup.connect(url).get();
 				Elements link = doc.getElementsByAttributeValue("class", "ProfileTweet-text js-tweet-text u-dir");

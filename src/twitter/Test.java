@@ -74,7 +74,7 @@ public class Test {
 			credentials.add(new BasicNameValuePair("authenticity_token", authenticity_token));
 			postCred.setEntity(new UrlEncodedFormEntity(credentials));
 			
-			CloseableHttpResponse resCred = clientAuthen.execute(postCred, context);
+			CloseableHttpResponse resCred = clientAuthen.execute(postCred, context);  
 			
 			
 						

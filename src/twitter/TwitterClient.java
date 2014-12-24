@@ -5,7 +5,7 @@ import java.util.List;
 
 
 public interface TwitterClient {
-	public Status getStatus(String userName, long statusId);
+	public Status getStatus(long statusId);
 	public long postStatus(String text);
 	public List <String> getUserTimeline(String userName, int limit);
 

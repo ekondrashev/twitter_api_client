@@ -14,9 +14,9 @@ import org.jsoup.select.Elements;
 
 public class HttpTwitterClient {
 	
-	public Status getStatus (String userName, long statusId) throws IOException {
+	public Status getStatus (long statusId) throws IOException {
 		
-		String url = "http://twitter.com/" + userName + "/status/" + statusId;
+		String url = "http://twitter.com/*/status/" + statusId;
 		
 		Document doc = Jsoup.connect(url).get();
 		

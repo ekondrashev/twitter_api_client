@@ -33,8 +33,7 @@ import org.jsoup.select.Elements;
 
 public class Test {
 	
-		String authenticity_token = null;
-		
+			
 		HttpClientContext context = null;
 		
 		public void authenticateUser (String userName, String password) throws ClientProtocolException, IOException {
@@ -60,7 +59,7 @@ public class Test {
 			String html = htmlBuff.toString();
 			Document doc = Jsoup.parse(html);
 			Elements link = doc.getElementsByAttributeValue("name", "authenticity_token");
-			authenticity_token = link.attr("value");
+			String authenticity_token = link.attr("value");
 						
 			LaxRedirectStrategy redirectStrategy = new LaxRedirectStrategy();
 			CloseableHttpClient clientAuthen = HttpClients.custom()

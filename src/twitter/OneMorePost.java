@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -21,6 +23,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -73,14 +76,25 @@ public class OneMorePost {
 		
 		HttpPost httpPost2 = new HttpPost("https://twitter.com/i/tweet/create");
 		List<NameValuePair> nameValuePairs2 = new ArrayList<NameValuePair>();
-		nameValuePairs2.add(new BasicNameValuePair("status", "Hi!"));
+		nameValuePairs2.add(new BasicNameValuePair("status", "Hi!!!"));
 		nameValuePairs2.add(new BasicNameValuePair("authenticity_token", authenticity_token));
 		httpPost2.setEntity(new UrlEncodedFormEntity(nameValuePairs2));
-		CloseableHttpResponse response3 = httpClient2.execute(httpPost2, context);
+		CloseableHttpResponse respStatus = httpClient2.execute(httpPost2, context);
 		
 		System.out.println(context.getCookieStore().getCookies());
 		
-		System.out.println(response3.getStatusLine().toString());
+		HttpEntity  entStat = respStatus.getEntity();
+		String entStr = EntityUtils.toString(entStat);
+		Matcher matcher = Pattern.compile("\"tweet_id\":\"(\\d+)\".*").matcher(entStr);
+		matcher.find();
+		Long statusId = new Long(new String(matcher.group(1)));
+ 		
+		
+		
+		
+		
+		System.out.println(entStr);
+		System.out.println(statusId);
 		
 		
 		

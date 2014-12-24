@@ -34,11 +34,10 @@ public class TwitterApi {
 		OAuthConsumer consumer = new CommonsHttpOAuthConsumer(
 				consumerKey,
 				consumerSecret);
- 
-        consumer.setTokenWithSecret(accessToken, accessTokenSecret);
         String userName = "RidusNews";
+        consumer.setTokenWithSecret(accessToken, accessTokenSecret);
         HttpGet request = new HttpGet("https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=".concat(userName));
-        consumer.sign(request);
+        consumer.sign( request);
  
         HttpClient client = new DefaultHttpClient();
         HttpResponse response = client.execute(request);

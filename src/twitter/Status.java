@@ -46,19 +46,28 @@ public class Status {
 	public String getUserName () {
 		return userName;
 	}
-	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (statusId ^ (statusId >>> 32));
+		return result;
+	}
+
+	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof Status && obj!=null) {
-			Status status = (Status) obj;
-			return(this.statusId == status.statusId);
-		}
-		return false;
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Status other = (Status) obj;
+		if (statusId != other.statusId)
+			return false;
+		return true;
 	}
 	
-//	public int hashCode(){
-//		
-//		return (new Long(this.statusId)).intValue();
-//					
-//	}
-		
+			
 }

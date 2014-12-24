@@ -9,9 +9,9 @@ public class Status {
 	private Date statusDate;
 	private String userName;
 		
-	public void setStatusId (long id) {
-		if (id>0) { 
-			this.statusId=id;} else {throw new IllegalArgumentException ("Illegal value of argument");}
+	public void setStatusId (long statusId) {
+		if (statusId>0) { 
+			this.statusId=statusId;} else {throw new IllegalArgumentException ("Illegal value of argument");}
 	}
 	
 	public void setText (String text) {
@@ -47,5 +47,18 @@ public class Status {
 		return userName;
 	}
 	
+	public boolean equals(Object obj) {
+		if (obj instanceof Status && obj!=null) {
+			Status status = (Status) obj;
+			return(this.statusId == status.statusId);
+		}
+		return false;
+	}
+	
+//	public int hashCode(){
+//		
+//		return (new Long(this.statusId)).intValue();
+//					
+//	}
 		
 }

@@ -32,12 +32,10 @@ public class OneMorePost {
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		HttpGet httpGet = new HttpGet("http://twitter.com");
 		
-		CookieStore cookieStore = new BasicCookieStore();
 		HttpClientContext context = HttpClientContext.create();
-		context.setCookieStore(cookieStore);
-		
+				
 		CloseableHttpResponse response = httpClient.execute(httpGet, context);
-		
+				
 		HttpEntity entity = response.getEntity();
 		InputStream instream = entity.getContent();
 		BufferedReader in = new BufferedReader(new InputStreamReader(instream, "UTF-8"));
@@ -56,6 +54,8 @@ public class OneMorePost {
 		String authenticity_token = link.attr("value");
 		
 		
+		
+		
 		LaxRedirectStrategy redirectStrategy = new LaxRedirectStrategy();
 		CloseableHttpClient httpClient2 = HttpClients.custom()
 		        .setRedirectStrategy(redirectStrategy)
@@ -69,15 +69,19 @@ public class OneMorePost {
 		httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 		
 		CloseableHttpResponse response2 = httpClient2.execute(httpPost, context);
-		
+				
 		
 		HttpPost httpPost2 = new HttpPost("https://twitter.com/i/tweet/create");
 		List<NameValuePair> nameValuePairs2 = new ArrayList<NameValuePair>();
-		nameValuePairs2.add(new BasicNameValuePair("status", "Now it works!"));
+		nameValuePairs2.add(new BasicNameValuePair("status", "Hi!"));
 		nameValuePairs2.add(new BasicNameValuePair("authenticity_token", authenticity_token));
 		httpPost2.setEntity(new UrlEncodedFormEntity(nameValuePairs2));
 		CloseableHttpResponse response3 = httpClient2.execute(httpPost2, context);
+		
+		System.out.println(context.getCookieStore().getCookies());
+		
 		System.out.println(response3.getStatusLine().toString());
+		
 		
 		
 

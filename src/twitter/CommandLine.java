@@ -18,13 +18,14 @@ public class CommandLine {
 		Map <String, String> commands = new HashMap<String, String>();
 		
 		for (String arg: args) {
-			if (Pattern.compile("getstatus|get_status").matcher(arg.toLowerCase()).find()) {
-				commands.put("cmd", "getStatus");
-			} else if (Pattern.compile("poststatus|post_status").matcher(arg.toLowerCase()).find()) {
-				commands.put("cmd", "postStatus");
-			} else if (Pattern.compile("getusertimeline|get_usertimeline|get_user_timeline").matcher(arg.toLowerCase()).find()){
-				commands.put("cmd", "getUserTimeline");
-			}
+			arg = arg.toString().toLowerCase().replaceFirst("getstatus|get_status", "getStatus");
+//			if (Pattern.compile("getstatus|get_status").matcher(arg.toLowerCase()).find()) {
+//				commands.put("cmd", "getStatus");
+//			} else if (Pattern.compile("poststatus|post_status").matcher(arg.toLowerCase()).find()) {
+//				commands.put("cmd", "postStatus");
+//			} else if (Pattern.compile("getusertimeline|get_usertimeline|get_user_timeline").matcher(arg.toLowerCase()).find()){
+//				commands.put("cmd", "getUserTimeline");
+//			}
 		}
 		
 		

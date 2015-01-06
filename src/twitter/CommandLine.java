@@ -1,88 +1,108 @@
 package twitter;
 
+import java.io.Console;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CommandLine {
+class CommandLine {
+						
+	static Map <String, String> extract (String[] args) {
+		
+		Map <String, String> commands = new HashMap<String, String>();			
+		
+		for (String arg: args) {
+			Matcher matcher = Pattern.compile("--(\\w+)=(\\w+)").matcher(arg);
+			matcher.find();
+			commands.put(matcher.group(1), matcher.group(2));
+			
+		}
+		
+		return validate(commands);
 
-	public static void main(String[] args) {
-		extractCommands(args);
 	}
 	
-	public static  void extractCommands (String[] args) {
 		
-		Map <String, String> commands = new HashMap<String, String>();
-		
-		for (String arg: args) {
-			arg = arg.toString().toLowerCase().replaceFirst("getstatus|get_status", "getStatus");
-//			if (Pattern.compile("getstatus|get_status").matcher(arg.toLowerCase()).find()) {
-//				commands.put("cmd", "getStatus");
-//			} else if (Pattern.compile("poststatus|post_status").matcher(arg.toLowerCase()).find()) {
-//				commands.put("cmd", "postStatus");
-//			} else if (Pattern.compile("getusertimeline|get_usertimeline|get_user_timeline").matcher(arg.toLowerCase()).find()){
-//				commands.put("cmd", "getUserTimeline");
-//			}
-		}
-		
-		
-		for (String arg: args) {
-			if (Pattern.compile("--id=(\\d+)").matcher(arg.toLowerCase()).find()) {
-				Pattern pattern = Pattern.compile("id=(\\d+)");
-				Matcher matcher = pattern.matcher(arg.toLowerCase());
-				matcher.find();
-				String id = matcher.group(1);
-				commands.put("id",id);
-			} else if (Pattern.compile("--text=(.{1,140})").matcher(arg.toLowerCase()).find()) {
-				Pattern pattern = Pattern.compile("--text=(.{1,140})");
-				Matcher matcher = pattern.matcher(arg.toLowerCase());
-				matcher.find();
-				String text = matcher.group(1);
-				commands.put("text", text);
-			} else if (Pattern.compile("--limit=(\\d{1,3})").matcher(arg.toLowerCase()).find()) {
-				Pattern pattern = Pattern.compile("--limit=(\\d{1,3})");
-				Matcher matcher = pattern.matcher(arg.toLowerCase());
-				matcher.find();
-				String limit = matcher.group(1);
-				commands.put("limit", limit);
-			}
-		}
+	static Map <String, String> validate (Map <String, String> commands){
 				
-			Set <String> keysGetStatus = new HashSet <String>();
-			keysGetStatus.add("cmd");
-			keysGetStatus.add("id");
-			
-			Set <String> keysPostStatus = new HashSet <String>();
-			keysPostStatus.add("cmd");
-			keysPostStatus.add("text");
-			
-			Set <String> keysGetUserTL = new HashSet <String>();
-			keysGetUserTL.add("cmd");
-			keysGetUserTL.add("id");
-			keysGetUserTL.add("text");
-			
-			String usage = "Usage: 1)--cmd=\"getStatus\"--id=\"Enter message ID\","
-					+ "2) --cmd=\"postStatus\"--text=\"Enter the message (up to 140 characters)\","
-					+ "3)--cmd=\"getUserTimeLine\"--id=\"Enter user ID\"--limit=\"Enter the number of messages (up to 100 messages)\"";
-			
-			if (commands.keySet().equals(keysGetStatus) && commands.get("cmd").equals("getStatus")) {
-				returnCommands(commands);				
-			} else if (commands.keySet().equals(keysPostStatus) && commands.get("cmd").equals("postStatus")) {
-				returnCommands(commands);
-			} else if (commands.keySet().equals(keysGetUserTL) && commands.get("cmd").equals("getUserTimeline")) {
-				returnCommands(commands);
-			} else { System.out.println(usage);}
-			
+		Set <String> keysGetStatus = new HashSet <String>();
+		keysGetStatus.add("cmd");
+		keysGetStatus.add("id");
+				
+		Set <String> keysPostStatus = new HashSet <String>();
+		keysPostStatus.add("cmd");
+		keysPostStatus.add("text");
+		
+		Set <String> keysGetUserTL = new HashSet <String>();
+		keysGetUserTL.add("cmd");
+		keysGetUserTL.add("user_name");
+		keysGetUserTL.add("limit");
+		
+		if (commands.keySet().equals(keysGetStatus) && commands.get("cmd").equals("get_status")) {
+			return forTwitterClient (commands);				
+		} else if (commands.keySet().equals(keysPostStatus) && commands.get("cmd").equals("post_status")) {
+			return forTwitterClient (commands);
+		} else if (commands.keySet().equals(keysGetUserTL) && commands.get("cmd").equals("get_user_timeline")) {
+			return forTwitterClient (commands); }
+		
+	
+		return forTwitterClient (null);
 				
 	}
 	
-	public static  Map <String, String> returnCommands (Map <String, String> commands) {
+	static Map<String, String> forTwitterClient (Map <String, String> commands){
 		
-		return commands;
+		if (commands != null) {
+			callTwitterClient (commands);
+		} else {System.out.println(usage);}
+		
+		return null;
+								
+	}
+	
+	static void callTwitterClient (Map <String, String> commands){
+		
+		switch (commands.get("cmd")) {
+		case "get_status":
+			long statusId = new Long(commands.get("id"));
+			TwitterClient forStatus = new HttpTwitterClient();
+			Status status = forStatus.getStatus(statusId);
+			System.out.println(status.getText());
+			break;
+		case "get_user_timeline":
+			String userName = commands.get("user_name");
+			int limit = Integer.parseInt(commands.get("limit"));
+			TwitterClient forTL = new HttpTwitterClient();
+			List <Status> userTL = forTL.getUserTimeline(userName, limit);
+			Status status2 = userTL.get(2);
+			System.out.println(status2.getText());
+			break;
+		case "post_status":
+			Console console = System.console();
+			if (console == null) {
+	            System.err.println("No console.");
+	            System.exit(1);
+	        }
+			console.printf("Please enter your login: ");
+			String login = console.readLine();
+			char[] pw = console.readPassword("Please enter your password: ");
+			String password = new String (pw);
+			String text = commands.get("text");
+			TwitterClient forPost = new HttpTwitterClient(login,password);
+			long statusID = forPost.postStatus(text);
+			System.out.println(statusID);
+			break;
+			
+		}
 		
 	}
 	
+	static String usage = "Usage: 1)--cmd=\"get_status\"--id=\"Enter message ID\","
+			+ "2) --cmd=\"post_status\"--text=\"Enter the message (up to 140 characters)\","
+			+ "3)--cmd=\"get_user_timeline\"--user_name=\"Enter user name\"--limit=\"Enter the number of messages (up to 100 messages)\"";
 }

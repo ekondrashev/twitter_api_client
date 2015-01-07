@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
+import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -37,9 +38,10 @@ public class HttpTwitterClient implements TwitterClient {
 	
 	HttpTwitterClient () {}
 	
-	HttpTwitterClient (String userName, String password) {
+	HttpTwitterClient (String userName, String password) throws AuthenticationException {
 		
 		CloseableHttpClient clientToken = HttpClients.createDefault();
+		
 		HttpGet getToken = new HttpGet("http://twitter.com");
 		context = HttpClientContext.create();
 		
@@ -81,20 +83,23 @@ public class HttpTwitterClient implements TwitterClient {
 			authenticity_token = link.attr("value");
 			clientToken.close();
 			resToken.close();
-		
-			LaxRedirectStrategy redirectStrategy = new LaxRedirectStrategy();
-			CloseableHttpClient clientAuthen = HttpClients.custom()
-			        .setRedirectStrategy(redirectStrategy)
-			        .build();
 			
-			HttpPost postCred = new HttpPost("https://twitter.com/sessions");
-			List<NameValuePair> credentials = new ArrayList<NameValuePair>();
-			credentials.add(new BasicNameValuePair("session[username_or_email]", userName));
-			credentials.add(new BasicNameValuePair("session[password]", password));
-			credentials.add(new BasicNameValuePair("authenticity_token", authenticity_token));
-			postCred.setEntity(new UrlEncodedFormEntity(credentials));
-			clientAuthen.execute(postCred, context);
-			clientAuthen.close();
+			if (ClientUtils.checkLogPas(userName, password)){
+		
+				LaxRedirectStrategy redirectStrategy = new LaxRedirectStrategy();
+				CloseableHttpClient clientAuthen = HttpClients.custom()
+				        .setRedirectStrategy(redirectStrategy)
+				        .build();
+				
+				HttpPost postCred = new HttpPost("https://twitter.com/sessions");
+				List<NameValuePair> credentials = new ArrayList<NameValuePair>();
+				credentials.add(new BasicNameValuePair("session[username_or_email]", userName));
+				credentials.add(new BasicNameValuePair("session[password]", password));
+				credentials.add(new BasicNameValuePair("authenticity_token", authenticity_token));
+				postCred.setEntity(new UrlEncodedFormEntity(credentials));
+				clientAuthen.execute(postCred, context);
+				clientAuthen.close();
+			} else {throw new AuthenticationException ("Invalid user name and/or password.");}
 		}
 		catch (IOException e) {
 			e.printStackTrace();	

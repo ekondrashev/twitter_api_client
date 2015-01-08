@@ -12,7 +12,7 @@ import javax.swing.text.DefaultEditorKit.CopyAction;
 public class FileCopy {
 
 	public static void main(String[] args) throws IOException {
-		// סמחהאול מבüוךע פאיכא
+		// create file סמחהאול מבüוךע פאיכא
 		File file1 = new File("file1");
 
 		// סמחהאול סאל פאיכ לועמהמל

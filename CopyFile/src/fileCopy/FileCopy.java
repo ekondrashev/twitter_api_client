@@ -12,21 +12,21 @@ import javax.swing.text.DefaultEditorKit.CopyAction;
 public class FileCopy {
 
 	public static void main(String[] args) throws IOException {
-		// create file создаем обьект файла
+		// create object file
 		File file1 = new File("file1");
 
-		// создаем сам файл методом
+		// Create a file using the method
 		FileOutputStream createFile = new FileOutputStream(file1);
 
-		// записываем в файл стринговые данные
+		// write to a file string data
 		DataOutputStream writeData = new DataOutputStream(createFile);
 
-		// записываем при помощи цикла
+		// write data using the cycle
 		int i;
 		for (i = 0; i < 5; i++)
 			writeData.writeBytes("Test");
 
-		// закрываем выходной поток
+		// close the output stream
 		writeData.close();
 
 		System.out.println("Absolute path: " + file1.getAbsolutePath());
@@ -35,14 +35,13 @@ public class FileCopy {
 
 		System.out.println("Length: " + file1.length());
 
-		// копируем файл при помощи в создания входного и
-		// выходного потоков побайтовое копирование
-		
-
-		// создаем входной поток
+		//  Copy the file by creating input and
+		// output (byte by byte copy)
+	
+		// Create an input stream
 		FileInputStream inputS = new FileInputStream("file1");
 
-		// создаем выходной потом
+		// Create an output stream
 		FileOutputStream outputS = new FileOutputStream("output.txt");
 
 		int nLength;

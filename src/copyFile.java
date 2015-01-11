@@ -8,20 +8,20 @@ public class copyFile {
 
 	public static void main(String[] args)throws IOException {
 		File source = new File("C:\\text.txt");
-		// проверяем существование файла text.xtx (созданного)
+		// check the existence of the file text.txt (created)
 		if (source.isFile()) {
-			System.out.println("путь файла: " + source.getPath() + " имя файла: "
+			System.out.println("file path: " + source.getPath() + "file name : "
 					+ source.getName());
 		}
-		// создаем обьект принимаемого файла
+		// create a file object destinated
 		File dest = new File("D:\\dest.txt");
 
-		// созадем входной поток
+		// Create an input stream
 		FileInputStream is = new FileInputStream(source);
 		try {
-			// создаем выходной поток
+			// Create an output stream
 			FileOutputStream os = new FileOutputStream(dest);
-			// копируем побайтово файла
+			// copy the file byte by byte
 			try {
 				byte[] buffer = new byte[4096];
 				int length;
@@ -35,7 +35,7 @@ public class copyFile {
 			is.close();
 		}
 		if (dest.isFile()) {
-			System.out.print("путь файла: " + dest.getPath() + " имя файла: "
+			System.out.print("file path: " + dest.getPath() + " file name: "
 					+ dest.getName());
 		}
 	}

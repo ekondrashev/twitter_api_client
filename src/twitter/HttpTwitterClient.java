@@ -85,6 +85,8 @@ public class HttpTwitterClient implements TwitterClient {
 			resToken.close();
 			
 			if (ClientUtils.checkLogPas(userName, password)){
+				
+				System.out.println("Authentication is successful...");
 		
 				LaxRedirectStrategy redirectStrategy = new LaxRedirectStrategy();
 				CloseableHttpClient clientAuthen = HttpClients.custom()
@@ -122,7 +124,9 @@ public class HttpTwitterClient implements TwitterClient {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-			
+		
+		System.out.println("Parsing HTML...");
+		
 		Elements textLink = doc.getElementsByAttributeValue("property", "og:description");
 		String text = textLink.attr("content");
 		text = text.substring(1, (text.length()-1));
@@ -159,6 +163,8 @@ public class HttpTwitterClient implements TwitterClient {
 			e.printStackTrace();
 		}
 		
+		System.out.println("Parsing HTML...");
+		
 		Elements link = doc.getElementsByAttributeValue("class", "StreamItem js-stream-item" );
 		List <Element> elements = link.subList(0, limit);
 					
@@ -168,18 +174,17 @@ public class HttpTwitterClient implements TwitterClient {
 			String idStr = linkStatId.attr("data-tweet-id");
 			long statusId = new Long(idStr);
 				
-			String name = element.attr("data-screen-name");
+			String name = linkStatId.attr("data-screen-name");
 				
 			Elements dateLink = element.getElementsByAttribute("data-time");
 			String dateStr = dateLink.attr("data-time");
 			Date date = new Date(new Long(dateStr)*1000);
-				
-			//It should be overwritten
+							
 			Elements textLink = element.getElementsByClass("ProfileTweet-contents");
 			Element textLink2 = textLink.get(0);
 			Elements textLink3 = textLink2.getElementsByAttribute("lang");
 			String text = textLink3.text();
-				
+			
 			Status status = new Status();
 			status.setStatusId(statusId);
 			status.setUserName(name);
@@ -194,6 +199,9 @@ public class HttpTwitterClient implements TwitterClient {
 	}
 	
 	public long postStatus(String text) {
+		
+		System.out.println("Posting status...");
+		
 		long statusId = 0L;
 		CloseableHttpClient clientStatus = HttpClients.createDefault();
 		HttpPost postStat = new HttpPost("https://twitter.com/i/tweet/create");

@@ -7,25 +7,23 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.auth.AuthenticationException;
 
 class CommandLine {
 	
-	private Map <String, String> commands = new HashMap<String, String>();;
+	Map <String, String> commands = new HashMap<String, String>();
 						
-	CommandLine (String[] args) throws AuthenticationException {
+	CommandLine (String[] args) {
 				
 		for (String arg: args) {
-			Matcher matcher = Pattern.compile("--(\\w+)=(\\w+)").matcher(arg);
-			matcher.find();
-			commands.put(matcher.group(1), matcher.group(2));
-			
+			Matcher matcher = Pattern.compile("--(\\w+)=(.+)").matcher(arg);
+			if (matcher.find()){
+			commands.put(matcher.group(1), matcher.group(2));}
 		}
 				
 	}
 	
 		
-	Map <String, String> validate () throws AuthenticationException{
+	Map <String, String> validate (){
 				
 		Set <String> keysGetStatus = new HashSet <String>();
 		keysGetStatus.add("cmd");

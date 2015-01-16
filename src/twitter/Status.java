@@ -1,12 +1,10 @@
 package twitter;
 
-import java.util.Date;
-
 public class Status {
 	
 	private long statusId;
 	private String text;
-	private Date statusDate;
+	private String statusDate;
 	private String userName;
 		
 	public void setStatusId (long statusId) {
@@ -19,7 +17,7 @@ public class Status {
 		else {throw new IllegalArgumentException ("Illegal value of argument");}
 	}
 	
-	public void setStatusDate (Date statusDate) {
+	public void setStatusDate (String statusDate) {
 		if (statusDate!=null) {this.statusDate=statusDate;}
 		else {throw new IllegalArgumentException ("Illegal value of argument");} 
 	}
@@ -39,7 +37,7 @@ public class Status {
 		return text;
 	}
 	
-	public Date getStatusDate() {
+	public String getStatusDate() {
 		return statusDate;
 	}
 	

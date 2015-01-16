@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.SocketTimeoutException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,77 +38,82 @@ public class HttpTwitterClient implements TwitterClient {
 	
 	String authenticity_token = null;
 	
-	HttpTwitterClient () {}
-	
-	HttpTwitterClient (String userName, String password) throws AuthenticationException {
+	HttpTwitterClient (Map <String, String> parameters) throws AuthenticationException {
 		
-		CloseableHttpClient clientToken = HttpClients.createDefault();
+		System.out.println("Connecting to the Internet...");
 		
-		HttpGet getToken = new HttpGet("http://twitter.com");
-		context = HttpClientContext.create();
-		
-		CloseableHttpResponse resToken = null;
-		try {
-			resToken = clientToken.execute(getToken, context);
-		}
-		catch (ClientProtocolException e) {
-			e.printStackTrace();}
-		catch (IOException e) {
-		System.err.println("Please check your internet connection.");}
+		if (parameters.containsKey("userName") && parameters.containsKey("password")) {
 			
-		HttpEntity entityToken = resToken.getEntity();
-				
-		try {
-			InputStream instream = entityToken.getContent();
-		
-			BufferedReader in = null;
-			StringBuffer htmlBuff = new StringBuffer();
+			String userName = parameters.get("userName");
+			String password = parameters.get("password");
+			
+			CloseableHttpClient clientToken = HttpClients.createDefault();
+			
+			HttpGet getToken = new HttpGet("http://twitter.com");
+			context = HttpClientContext.create();
+			
+			CloseableHttpResponse resToken = null;
 			try {
-				in = new BufferedReader(new InputStreamReader(instream));
-				String inputLine;
-				while ((inputLine = in.readLine()) != null) {
-					htmlBuff.append(inputLine);
-				}
+				resToken = clientToken.execute(getToken, context);
 			}
-		
+			catch (ClientProtocolException e) {
+				e.printStackTrace();}
 			catch (IOException e) {
-				e.printStackTrace();
-			}
-			finally {
-				in.close();
-			}
-		
-		
-			String html = htmlBuff.toString();
-			Document doc = Jsoup.parse(html);
-			Elements link = doc.getElementsByAttributeValue("name", "authenticity_token");
-			authenticity_token = link.attr("value");
-			clientToken.close();
-			resToken.close();
+			System.err.println("Please check your internet connection.");}
+				
+			HttpEntity entityToken = resToken.getEntity();
+					
+			try {
+				InputStream instream = entityToken.getContent();
 			
-			if (ClientUtils.checkLogPas(userName, password)){
+				BufferedReader in = null;
+				StringBuffer htmlBuff = new StringBuffer();
+				try {
+					in = new BufferedReader(new InputStreamReader(instream));
+					String inputLine;
+					while ((inputLine = in.readLine()) != null) {
+						htmlBuff.append(inputLine);
+					}
+				}
+			
+				catch (IOException e) {
+					e.printStackTrace();
+				}
+				finally {
+					in.close();
+				}
+			
+			
+				String html = htmlBuff.toString();
+				Document doc = Jsoup.parse(html);
+				Elements link = doc.getElementsByAttributeValue("name", "authenticity_token");
+				authenticity_token = link.attr("value");
+				clientToken.close();
+				resToken.close();
 				
-				System.out.println("Authentication is successful...");
-		
-				LaxRedirectStrategy redirectStrategy = new LaxRedirectStrategy();
-				CloseableHttpClient clientAuthen = HttpClients.custom()
-				        .setRedirectStrategy(redirectStrategy)
-				        .build();
-				
-				HttpPost postCred = new HttpPost("https://twitter.com/sessions");
-				List<NameValuePair> credentials = new ArrayList<NameValuePair>();
-				credentials.add(new BasicNameValuePair("session[username_or_email]", userName));
-				credentials.add(new BasicNameValuePair("session[password]", password));
-				credentials.add(new BasicNameValuePair("authenticity_token", authenticity_token));
-				postCred.setEntity(new UrlEncodedFormEntity(credentials));
-				clientAuthen.execute(postCred, context);
-				clientAuthen.close();
-			} else {throw new AuthenticationException ("Invalid user name and/or password.");}
-		}
-		catch (IOException e) {
-			e.printStackTrace();	
-		}
-				
+				if (ClientUtils.checkLogPas(userName, password)){
+					
+					System.out.println("Authentication is successful...");
+			
+					LaxRedirectStrategy redirectStrategy = new LaxRedirectStrategy();
+					CloseableHttpClient clientAuthen = HttpClients.custom()
+					        .setRedirectStrategy(redirectStrategy)
+					        .build();
+					
+					HttpPost postCred = new HttpPost("https://twitter.com/sessions");
+					List<NameValuePair> credentials = new ArrayList<NameValuePair>();
+					credentials.add(new BasicNameValuePair("session[username_or_email]", userName));
+					credentials.add(new BasicNameValuePair("session[password]", password));
+					credentials.add(new BasicNameValuePair("authenticity_token", authenticity_token));
+					postCred.setEntity(new UrlEncodedFormEntity(credentials));
+					clientAuthen.execute(postCred, context);
+					clientAuthen.close();
+				} else {throw new AuthenticationException ("Invalid user name and/or password.");}
+			}
+			catch (IOException e) {
+				e.printStackTrace();	
+			}
+		}		
 	}
 	
 	
@@ -137,7 +144,9 @@ public class HttpTwitterClient implements TwitterClient {
 			
 		Elements dateLink = doc.getElementsByAttribute("data-time-ms");
 		String dateStr = dateLink.attr("data-time-ms");
-		Date statusDate = new Date (new Long (dateStr));
+		Date date = new Date (new Long (dateStr));
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String statusDate = sdf.format(date);
 							
 		status.setStatusId(statusId);
 		status.setUserName(userName);
@@ -179,6 +188,8 @@ public class HttpTwitterClient implements TwitterClient {
 			Elements dateLink = element.getElementsByAttribute("data-time");
 			String dateStr = dateLink.attr("data-time");
 			Date date = new Date(new Long(dateStr)*1000);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String statusDate = sdf.format(date);
 							
 			Elements textLink = element.getElementsByClass("ProfileTweet-contents");
 			Element textLink2 = textLink.get(0);
@@ -188,7 +199,7 @@ public class HttpTwitterClient implements TwitterClient {
 			Status status = new Status();
 			status.setStatusId(statusId);
 			status.setUserName(name);
-			status.setStatusDate(date);
+			status.setStatusDate(statusDate);
 			status.setText(text);
 			statuses.add(status);
 		}
@@ -236,5 +247,6 @@ public class HttpTwitterClient implements TwitterClient {
 		return statusId;
 				
 	}
+	
 	
 }

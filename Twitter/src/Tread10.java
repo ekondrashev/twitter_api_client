@@ -1,9 +1,9 @@
-import java.util.ArrayList;
 
+public abstract class Tread10 implements Runnable {
 
-public abstract class Tread10 {
 	public static int count=0;
 
+	@Override
 	public void run() {
 		while (count <= 1000000) {
 			count++;
@@ -15,9 +15,11 @@ public abstract class Tread10 {
 	public static void main(String[] args) throws InterruptedException  {
 		for (int i = 0; i < 10; i++) {
 			 
-			Thread myThready1 = new Thread();
-			myThready1.start(); // Запуск потока
-			myThready1.join();
+			Thread myThread1 = new Thread();
+			myThread1.start(); // Запуск потока
+			myThread1.join();
+			
+			System.out.println("oK");
 		}
 		
 

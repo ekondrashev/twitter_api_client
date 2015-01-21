@@ -16,10 +16,12 @@ public class CounterTest extends TestCase {
 	
 	 @Test
 		public void testCounterMult(){
-		 CounterMult counter = new CounterMult();
-		 int actual = counter.execute();
-		 int expected = 10000000;
-		 assertEquals(actual,expected);
+		 for (int i= 0; i<100; i++){
+			 CounterMult counter = new CounterMult();
+			 int actual = counter.execute();
+			 int expected = 10000000;
+			 assertEquals(actual,expected);
+	 }
 	 }
 
 }

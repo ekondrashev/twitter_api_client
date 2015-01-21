@@ -1,27 +1,40 @@
 
+import java.util.concurrent.atomic.*;
+
 public abstract class Thread10 implements Runnable {
 
-	public static int count=0;
+	static final AtomicInteger count = new AtomicInteger(0);
+	static Thread[] aTh= new Thread[10];
 	
-
-	public static void main(String[] args) throws InterruptedException  {
+	static int startAllThreads() throws InterruptedException{
 		for (int i = 0; i < 10; i++) {
-			
-			Thread myThready = new Thread(new Runnable() {
+			aTh[i] = new Thread(new Runnable() {
 
 				public void run() // Этот метод будет выполняться в побочном потоке
 				{
-					System.out.println(count);
-					for (int i =0; i<1000000; i++) {
-						count++;
-					}
-				
+					//System.out.println(i);
+				for (int k =0; k<1000000; k++) {
+//					 increment();
+					count.incrementAndGet();
+				}
+		 		
 				}
 			});
-			myThready.start(); 
-			myThready.join();
 		}
-		System.out.println(count);
+		
+		for(int i=0; i<10; i++){
+			aTh[i].start(); 
+		}
+		for(int i=0; i<10; i++){
+			aTh[i].join();
+		}	
+		return count.get();
+		
+	}
+	
+	public static void main(String[] args) throws InterruptedException  {
+	
+		System.out.println(startAllThreads());
 
 	}
 

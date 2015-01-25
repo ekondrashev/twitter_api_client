@@ -10,39 +10,62 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.TimeUnit;
+
 
 
 public class Banking {
-	Random random = new Random();
-	List <Integer> clients = new ArrayList<Integer>();
-	Lock lock = new ReentrantLock();
-	List <Integer> sums = new ArrayList<Integer>();
 	
-	public List<Integer> execute () {
-		
-		int sumBT=0;
-		int sumAT=0;
-		
+	List <Account> accounts = new ArrayList<Account>();
+	Random random = new Random();
+	
+	Banking(){
 		for (int i=0; i<100; i++) {
 			int value = random.nextInt(100000000);
-			clients.add(value);
+			Account account = new Account(value);
+			accounts.add(account);
 		}
 		
-		for(Integer account: clients){
-			sumBT += account;
-		}
+	}
 		
+	int calculateSum(){
+		int sum = 0;
+		for (Account account: accounts){
+			int value=account.getAccount();
+			sum += value;
+		}
+		return sum;
+	}
+	
+	String transfer(){
+		Integer nPayer = random.nextInt(100);
+    	Integer nPayee = random.nextInt(100);
+    	Integer amount = random.nextInt(10000000);
+    	if (nPayer==nPayee) nPayee=nPayer+1;
+    	Account payer = accounts.get(nPayer);
+    	Account payee = accounts.get(nPayee);
+    	if (amount>payer.getAccount()) return "This transaction cannot be completed";
+    	synchronized (payer){
+    		payer = accounts.get(nPayer);
+    		payer.withdraw(amount);
+    		accounts.set(nPayer, payer);
+    	}
+    	synchronized (payee){
+    		payee = accounts.get(nPayee);
+    		payee.put(amount);
+    		accounts.set(nPayee, payee);
+    	}
+    	return "This transaction was successful";
+	}
+	
+	void execute(){
 		Set<Callable<String>> callables = new HashSet<Callable<String>>();
 		
 		for (int i=0; i<50; i++) {
 			callables.add(new Callable<String>() {
 			    public String call(){
-			    	
 			    	String result = transfer();
 					return result;
-			    	
 			    }
 			});	
 		}
@@ -69,68 +92,33 @@ public class Banking {
 		}
 
 		executorService.shutdown();
-		
-		for(Integer account: clients){
-			sumAT += account;
+		try {
+			if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
+				executorService.shutdownNow();
+			}
+		} catch (InterruptedException ie) {
+			executorService.shutdownNow();
+			Thread.currentThread().interrupt();
 		}
-		
-		sums.add(sumBT);
-		sums.add(sumAT);
-		
-		return sums;
 
 	}
 	
-	String transfer(){
-		
-		lock.lock();
-		
-		Integer nPayer = random.nextInt(100);
-    	Integer nPayee = random.nextInt(100);
-    	Integer amount = random.nextInt(10000000);
-    	if (nPayer==nPayee) nPayee=nPayer+1;
-    	Integer payer = clients.get(nPayer);
-    	Integer payee = clients.get(nPayee);
-    	if (amount<payer)
-    	{
-    		payer = payer - amount;
-    		payee = payee + amount;
-    	} else {
-    		lock.unlock();
-    		return "This transaction cannot be completed";}
-    	
-    	clients.set(nPayer, payer);
-    	clients.set(nPayee, payee);
-    	
-    	lock.unlock();
-    	
-        return "This transaction was successful";
-		
-	}
 
 }
 
+class Account {
+	private int account;
+	Account (int account){
+		this.account=account;
+	}
+	void withdraw(int amount) {
+		account = account - amount;
+	}
+	void put(int amount) {
+		account = account + amount;
+		}
+	int getAccount(){
+		return account;
+	}
 
-
-//class Account {
-//	Account (int account){
-//		this.account=account;
-//	}
-//	int account;
-//	void withdraw(int amount) {
-//		
-//			account = account - amount;
-//		
-//	}
-//	
-//	void put(int amount) {
-//		
-//			account = account + amount;
-//		
-//	}
-//	
-//	int getAccount(){
-//		return account;
-//	}
-//	
-//}
+}

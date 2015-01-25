@@ -12,65 +12,76 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-
-
 public class Banking {
-	
-	List <Account> accounts = new ArrayList<Account>();
+
+	List<Account> accounts = new ArrayList<Account>();
 	Random random = new Random();
-	
-	Banking(){
-		for (int i=0; i<100; i++) {
+
+	Banking() {
+		for (int i = 0; i < 20; i++) {
 			int value = random.nextInt(100000000);
 			Account account = new Account(value);
 			accounts.add(account);
 		}
-		
+
 	}
-		
-	int calculateSum(){
+
+	int calculateSum() {
 		int sum = 0;
-		for (Account account: accounts){
-			int value=account.getAccount();
+		for (Account account : accounts) {
+			int value = account.getAccount();
 			sum += value;
 		}
 		return sum;
 	}
-	
-	String transfer(){
-		Integer nPayer = random.nextInt(100);
-    	Integer nPayee = random.nextInt(100);
-    	Integer amount = random.nextInt(10000000);
-    	if (nPayer==nPayee) nPayee=nPayer+1;
-    	Account payer = accounts.get(nPayer);
-    	Account payee = accounts.get(nPayee);
-    	if (amount>payer.getAccount()) return "This transaction cannot be completed";
-    	synchronized (payer){
-    		payer = accounts.get(nPayer);
-    		payer.withdraw(amount);
-    		accounts.set(nPayer, payer);
-    	}
-    	synchronized (payee){
-    		payee = accounts.get(nPayee);
-    		payee.put(amount);
-    		accounts.set(nPayee, payee);
-    	}
-    	return "This transaction was successful";
+
+	String transfer() {
+		Integer nPayer = random.nextInt(20);
+		Integer nPayee = random.nextInt(20);
+		Integer amount = random.nextInt(10000000);
+		if (nPayer == nPayee) {
+			nPayer = random.nextInt(10);
+			nPayee = random.nextInt(10) + 10;
+		}
+		Account payer = accounts.get(nPayer);
+		Account payee = accounts.get(nPayee);
+		if (payer.getAccount() < payee.getAccount()) {
+			synchronized (payer) {
+				synchronized (payee) {
+					if (amount > payer.getAccount())
+						return "This transaction cannot be completed";
+					payer.withdraw(amount);
+					payee.put(amount);
+				}
+			}
+		} else {
+			synchronized (payee) {
+				synchronized (payer) {
+					if (amount > payer.getAccount())
+						return "This transaction cannot be completed";
+					payer.withdraw(amount);
+					payee.put(amount);
+				}
+			}
+
+		}
+
+		return "This transaction was successful";
 	}
-	
-	void execute(){
+
+	void execute() {
 		Set<Callable<String>> callables = new HashSet<Callable<String>>();
-		
-		for (int i=0; i<50; i++) {
+
+		for (int i = 0; i < 100; i++) {
 			callables.add(new Callable<String>() {
-			    public String call(){
-			    	String result = transfer();
+				public String call() {
+					String result = transfer();
 					return result;
-			    }
-			});	
+				}
+			});
 		}
 		ExecutorService executorService = Executors.newFixedThreadPool(50);
-		
+
 		List<Future<String>> futures = null;
 		try {
 			futures = executorService.invokeAll(callables);
@@ -78,10 +89,10 @@ public class Banking {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		for(Future<String> future : futures){
-		    try {
-				System.out.println("future.get = " + future.get());
+
+		for (Future<String> future : futures) {
+			try {
+				System.out.println(future.get());
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -93,8 +104,10 @@ public class Banking {
 
 		executorService.shutdown();
 		try {
-			if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
+			if (!executorService.awaitTermination(300, TimeUnit.SECONDS)) {
 				executorService.shutdownNow();
+				if (!executorService.awaitTermination(300, TimeUnit.SECONDS))
+					System.err.println("Pool did not terminate");
 			}
 		} catch (InterruptedException ie) {
 			executorService.shutdownNow();
@@ -102,22 +115,25 @@ public class Banking {
 		}
 
 	}
-	
 
 }
 
 class Account {
 	private int account;
-	Account (int account){
-		this.account=account;
+
+	Account(int account) {
+		this.account = account;
 	}
+
 	void withdraw(int amount) {
 		account = account - amount;
 	}
+
 	void put(int amount) {
 		account = account + amount;
-		}
-	int getAccount(){
+	}
+
+	int getAccount() {
 		return account;
 	}
 

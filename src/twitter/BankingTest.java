@@ -3,10 +3,10 @@ package twitter;
 import junit.framework.TestCase;
 
 public class BankingTest extends TestCase{
-	volatile int sumBT=0;
-	volatile int sumAT=0;
+	int sumBT=0;
+	int sumAT=0;
 	public void testBanking(){
-		for (int i=0; i<100000; i++){
+		for (int i=0; i<10000; i++){
 			Banking bank = new Banking();
 			sumBT = bank.calculateSum();
 			bank.execute();

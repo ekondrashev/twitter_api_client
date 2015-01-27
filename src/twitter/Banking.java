@@ -45,7 +45,7 @@ public class Banking {
 		}
 		Account payer = accounts.get(nPayer);
 		Account payee = accounts.get(nPayee);
-		if (payer.getAccount() < payee.getAccount()) {
+		if (nPayer < nPayee) {
 			synchronized (payer) {
 				synchronized (payee) {
 					if (amount > payer.getAccount())

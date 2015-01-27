@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -14,24 +15,31 @@ public class BankTransfer {
 	static long totalSumAfter = 0;
     static Random randomLong = new Random();
     static Random randomInt = new Random();
+    static List<BankClient> listOfClient;
 	
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException, ExecutionException {
+		makeNewClients();
 		runMe();
 	}
 
-	public static void runMe() {
-		Scanner sc = new Scanner(System.in);
-		System.out.println("Put amount of clients:");
+	public static void makeNewClients() {
 		clientAmount = 20; //sc.nextInt();
- 
+		 
 		List<BankClient> listOfClient = makesClient();
 		for (int i=0; i<clientAmount; i++) {
 			System.out.println(listOfClient.get(i));
 		}
-		System.out.println("All done. We have "+totalSum+"$. Put the number of transactions: ");
+		System.out.println("All done. We have "+totalSum+"$.");
+
+	}
+
+	public static void runMe() throws InterruptedException, ExecutionException {
+//		Scanner sc = new Scanner(System.in);
+//		System.out.println("Put amount of clients:");
+
 		int nTrans = 50; //sc.nextInt();
-		sc.close();
+	//	sc.close();
 		ExecutorService ex = Executors.newFixedThreadPool(nTrans);		
 		for (int i = 0; i < nTrans; i++) {
 			
@@ -43,7 +51,7 @@ public class BankTransfer {
 		}
 		
 		Future<String> s=ex.submit(new MoneyTransfer(listOfClient.get(c1), listOfClient.get(c2), randomInt.nextInt(1000) ));
-
+		System.out.println(s.get());;
 		}
 		
 		for (int k=0; k<clientAmount; k++) {
@@ -107,9 +115,18 @@ class MoneyTransfer implements Callable<String>{
 		this.summa = summa;
 	}
 	
-	public synchronized String call() {
-		cl1.saldo -= summa;
-		cl2.saldo += summa;
+	public String call() {
+		
+		synchronized (cl1) {
+			if (cl1.saldo <summa) {
+				return "No many, no party!";
+			} 
+			cl1.saldo -= summa;
+			synchronized (cl2) {
+				cl2.saldo += summa;
+			}
+		}
+		
 		return "Transfer from "+cl1.name + " to "+cl2.name +" in "+summa+"$ complete. ";
 
 		}

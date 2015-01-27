@@ -26,7 +26,7 @@ public class BankTransfer {
 	public static void makeNewClients() {
 		clientAmount = 20; //sc.nextInt();
 		 
-		List<BankClient> listOfClient = makesClient();
+		listOfClient = makeClients();
 		for (int i=0; i<clientAmount; i++) {
 			System.out.println(listOfClient.get(i));
 		}
@@ -62,7 +62,7 @@ public class BankTransfer {
 	}
 	
 	
-	private static List<BankClient> makesClient() {
+	static List<BankClient> makeClients() {
 		
 		List<BankClient> list = new ArrayList<BankClient>();
 	     randomLong.setSeed(1000000000);
@@ -101,6 +101,10 @@ class BankClient {
 		sb.append(saldo);
 			
 		return sb.toString();
+	}
+	
+	public int getSaldo(){
+		return saldo;
 	}
 }
 

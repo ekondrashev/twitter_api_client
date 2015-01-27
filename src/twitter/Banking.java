@@ -35,9 +35,15 @@ public class Banking {
 		return sum;
 	}
 
-	String transfer() {
-		Integer lock1 = 0;
-		Integer lock2 = 0;
+	String transfer(Account payer, Account payee, Integer amount) {
+		if (amount > payer.getAccount())
+			return "This transaction cannot be completed";
+		payer.withdraw(amount);
+		payee.put(amount);
+		return "This transaction was successful";
+	}
+
+	String simulateTransfer() {
 		Integer nPayer = random.nextInt(20);
 		Integer nPayee = random.nextInt(20);
 		Integer amount = random.nextInt(10000000);
@@ -47,25 +53,23 @@ public class Banking {
 		}
 		Account payer = accounts.get(nPayer);
 		Account payee = accounts.get(nPayee);
+		String result;
 		if (nPayer < nPayee) {
-			lock1 = nPayer;
-			lock2 = nPayee;
+			synchronized (payer) {
+				synchronized (payee) {
+					result = transfer(payer, payee, amount);
+				}
+			}
 		} else {
-			lock1 = nPayee;
-			lock2 = nPayer;
-		}
-
-		synchronized (lock1) {
-			synchronized (lock2) {
-				if (amount > payer.getAccount())
-					return "This transaction cannot be completed";
-				payer.withdraw(amount);
-				payee.put(amount);
+			synchronized (payee) {
+				synchronized (payer) {
+					result = transfer(payer, payee, amount);
+				}
 			}
 
 		}
 
-		return "This transaction was successful";
+		return result;
 	}
 
 	void execute() {
@@ -74,7 +78,7 @@ public class Banking {
 		for (int i = 0; i < 100; i++) {
 			callables.add(new Callable<String>() {
 				public String call() {
-					String result = transfer();
+					String result = simulateTransfer();
 					return result;
 				}
 			});

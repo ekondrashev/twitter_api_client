@@ -36,6 +36,8 @@ public class Banking {
 	}
 
 	String transfer() {
+		Integer lock1 = 0;
+		Integer lock2 = 0;
 		Integer nPayer = random.nextInt(20);
 		Integer nPayee = random.nextInt(20);
 		Integer amount = random.nextInt(10000000);
@@ -46,22 +48,19 @@ public class Banking {
 		Account payer = accounts.get(nPayer);
 		Account payee = accounts.get(nPayee);
 		if (nPayer < nPayee) {
-			synchronized (payer) {
-				synchronized (payee) {
-					if (amount > payer.getAccount())
-						return "This transaction cannot be completed";
-					payer.withdraw(amount);
-					payee.put(amount);
-				}
-			}
+			lock1 = nPayer;
+			lock2 = nPayee;
 		} else {
-			synchronized (payee) {
-				synchronized (payer) {
-					if (amount > payer.getAccount())
-						return "This transaction cannot be completed";
-					payer.withdraw(amount);
-					payee.put(amount);
-				}
+			lock1 = nPayee;
+			lock2 = nPayer;
+		}
+
+		synchronized (lock1) {
+			synchronized (lock2) {
+				if (amount > payer.getAccount())
+					return "This transaction cannot be completed";
+				payer.withdraw(amount);
+				payee.put(amount);
 			}
 
 		}

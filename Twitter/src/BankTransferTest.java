@@ -14,6 +14,7 @@ public class BankTransferTest {
 			for (int i=0; i<100; i++){
 					BankTransfer bank = new BankTransfer();
 					List<BankClient> clients = bank.makeClients();
+					bank.clientAmount =20;
 					long sumBefore =0;
 					long sumAfter =0;
 					
@@ -21,8 +22,9 @@ public class BankTransferTest {
 						BankClient bc = (BankClient) clients.get(j);
 						sumBefore += bc.getSaldo();
 					}
+					bank.listOfClient = clients;
 					bank.runMe();
-					
+					clients = bank.listOfClient;
 					for (int j =0; j<clients.size(); j++){
 						BankClient bc = (BankClient) clients.get(j);
 						sumAfter += bc.getSaldo();

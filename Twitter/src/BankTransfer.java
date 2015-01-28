@@ -10,7 +10,7 @@ import java.util.concurrent.Future;
 
 public class BankTransfer {
 
-	private static int clientAmount;
+	static int clientAmount =20;
 	static long totalSum = 0;
 	static long totalSumAfter = 0;
     static Random randomLong = new Random();

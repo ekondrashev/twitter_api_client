@@ -1,4 +1,5 @@
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.*;
 
 public abstract class Thread10 implements Runnable {
@@ -7,27 +8,12 @@ public abstract class Thread10 implements Runnable {
 	static Thread[] aTh= new Thread[10];
 	
 	static int startAllThreads() throws InterruptedException{
+		CountDownLatch latch = new CountDownLatch(10);
 		for (int i = 0; i < 10; i++) {
-			aTh[i] = new Thread(new Runnable() {
-
-				public void run() // Этот метод будет выполняться в побочном потоке
-				{
-					//System.out.println(i);
-				for (int k =0; k<1000000; k++) {
-//					 increment();
-					count.incrementAndGet();
-				}
-		 		
-				}
-			});
-		}
-		
-		for(int i=0; i<10; i++){
-			aTh[i].start(); 
-		}
-		for(int i=0; i<10; i++){
-			aTh[i].join();
-		}	
+			aTh[i] = new Tread10Worker(latch);
+			aTh[i].start();
+			}
+		latch.await();
 		return count.get();
 		
 	}

@@ -25,5 +25,6 @@
 	<classpathentry kind="lib" path="F:/Java/protoc/NewDepend/json-lib-2.2.3-jdk15.jar"/>
 	<classpathentry kind="lib" path="F:/Java/protoc/NewDepend/google-collections-0.9.jar"/>
 	<classpathentry kind="lib" path="F:/Java/com.mysql.jdbc_5.1.5.jar"/>
+	<classpathentry kind="lib" path="F:/Java/commons-io-2.4/commons-io-2.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

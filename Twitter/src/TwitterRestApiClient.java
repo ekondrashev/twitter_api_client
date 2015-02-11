@@ -41,13 +41,10 @@ public class TwitterRestApiClient implements TwitterClient{
         try {
 			consumer.sign(request);
 		} catch (OAuthMessageSignerException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (OAuthExpectationFailedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (OAuthCommunicationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
  
@@ -60,14 +57,16 @@ public class TwitterRestApiClient implements TwitterClient{
 		return null;
 	}
 
-	public long postStatus(String text) {
-		// TODO Auto-generated method stub
-		return 0;
+	public boolean postStatus(String text) {
+ //       consumer.setTokenWithSecret(accessToken, accessTokenSecret);
+		HttpGet request = new HttpGet("https://api.twitter.com/1.1/direct_messages/new.json".concat(text));
+        consumer.sign(request);
+		return true;
 	}
 
 	public List<Status> getUserTimeline(String userName, int limit) throws Exception {
 		
-        consumer.setTokenWithSecret(accessToken, accessTokenSecret);
+ //       consumer.setTokenWithSecret(accessToken, accessTokenSecret);
         String sLimit = Integer.toString(limit);
         HttpGet request = new HttpGet("https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=".concat(userName)+"&count=".concat(sLimit));
         consumer.sign(request);

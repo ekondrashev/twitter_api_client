@@ -14,7 +14,11 @@ import java.util.ArrayList;
 //import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public class InputFilter {
+public class InputFilter extends FilterReader {
+
+	protected InputFilter(Reader in) {
+		super(in);
+	}
 
 	public static void main(String[] args) throws IOException {
 

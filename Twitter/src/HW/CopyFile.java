@@ -43,5 +43,10 @@ public class CopyFile {
 
                 out.close();
 
-            }}}}
+            }}}
+
+	public static void copyFiletoFile(String f1, String f2) {
+		// TODO Auto-generated method stub
+		
+	}}
 

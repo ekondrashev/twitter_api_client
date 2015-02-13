@@ -15,12 +15,12 @@ public class copyFileTest {
 		for (int i = 0; i < 100; i++) {
 
 			try {
-				CopyFile.copyFiletoFile(f1, f2);
+				CopyFileToFile.copyFile(f1, f2);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			long crc1 = CopyFile.getCrc(f1);
-			long crc2 = CopyFile.getCrc(f2);
+			long crc1 = CopyFileToFile.getCrc(f1);
+			long crc2 = CopyFileToFile.getCrc(f2);
 
 			assertEquals(crc1, crc2);
 		}

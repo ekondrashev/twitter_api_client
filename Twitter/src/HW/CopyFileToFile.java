@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.CRC32;
 
-public class copyFiletoFile {
+public class CopyFileToFile {
 	private static final String filePath1 = "D:\\in.txt";
 	private static final String filePath2 = "D:\\out.txt";
 	public long crcIn;
@@ -16,11 +16,11 @@ public class copyFiletoFile {
 
 	public static void main(String[] args) throws IOException {
 
-		copyFiletoFile(filePath1, filePath2);
+		copyFile(filePath1, filePath2);
 
 	}
 
-	public static void copyFiletoFile(String fileP1, String fileP2)
+	public static void copyFile(String fileP1, String fileP2)
 			throws IOException {
 		FileInputStream in = null;
 

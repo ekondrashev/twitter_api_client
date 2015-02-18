@@ -12,7 +12,7 @@ public class ClientTelnet {
 
     System.out.println("Connecting to localhost ...");
 
-    fromserver = new Socket("127.0.0.1",8086);
+    fromserver = new Socket("127.0.0.1",8088);
     BufferedReader in  = new
      BufferedReader(new 
       InputStreamReader(fromserver.getInputStream()));
@@ -35,5 +35,6 @@ public class ClientTelnet {
     in.close();
     inu.close();
     fromserver.close();
+    System.out.println("End");
   }
 }

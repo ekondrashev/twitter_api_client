@@ -14,7 +14,7 @@ public class ServerForManyClients {
 
 		// create server socket
 
-		try (ServerSocket servers = new ServerSocket(8086)) {
+		try (ServerSocket servers = new ServerSocket(8088)) {
 //			System.out.println("Couldn't listen to port 8086");
 //			System.exit(-1);
 
@@ -33,7 +33,7 @@ public class ServerForManyClients {
 				System.out.println("Can't accept");
 				System.exit(-1);
 			}
-			 servers.close();
+//			 servers.close();
 
 		}
 
@@ -68,6 +68,7 @@ class NewConnect implements Runnable {
 		String input, output;
 
 		System.out.println("Wait for messages");
+		out.println("S ::: " + "Write for me");
 		try {
 			while ((input = in.readLine()) != null) {
 				if (input.equalsIgnoreCase("exit"))

@@ -3,21 +3,16 @@ package hw15_02_15;
 import java.io.*;
 import java.net.*;
 
-public class Client {
+public class ClientTelnet {
   public static void main(String[] args) throws IOException {
 
     System.out.println("Welcome to Client side");
 
     Socket fromserver = null;
 
-    if (args.length==0) {
-      System.out.println("use: client hostname");
-      System.exit(-1);
-    }
+    System.out.println("Connecting to localhost ...");
 
-    System.out.println("Connecting to... "+args[0]);
-
-    fromserver = new Socket(args[0],4444);
+    fromserver = new Socket("127.0.0.1",8086);
     BufferedReader in  = new
      BufferedReader(new 
       InputStreamReader(fromserver.getInputStream()));

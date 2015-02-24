@@ -75,59 +75,55 @@ public class ServerNIO {
         System.out.println("Messages from client: ");
 
         if ((clientChannel != null) && (clientChannel.isOpen())) {
+        
+            ByteBuffer buffer = ByteBuffer.allocate(100);
+            
+            Future<Integer> result = clientChannel.read(buffer);
+ //           while (true) {
+            int bytesRead = 0;
+			try {
+				bytesRead = result.get(10,TimeUnit.SECONDS);
+				System.out.println(bytesRead);
+			} catch (InterruptedException | ExecutionException | TimeoutException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} //read into buffer.
+            while (bytesRead != -1) {
 
-            while (true) {
-
-                ByteBuffer buffer = ByteBuffer.allocate(32);
-                Future<Integer> result = clientChannel.read(buffer);
 
                 while (! result.isDone()) {
                     // do nothing
                 }
-
+                
+                String clientString = new String(buffer.array()).trim();
+                System.out.println(clientString); 
                 buffer.flip();
-                String message = new String(buffer.array()).trim();
-                System.out.println(message);
+                buffer = ByteBuffer.wrap(("Serv: "+clientString).getBytes());
+                result = clientChannel.write(buffer);
+ //               System.out.println(new String(buffer.array()).trim()); 
+                while (! result.isDone()) {
+                    // do nothing
+                }    
+                
+                buffer.clear(); //make buffer ready for writing
+                
+                try {
+					bytesRead = clientChannel.read(buffer).get();
+				} catch (InterruptedException | ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
-                if (message.equals("Bye.")) {
-
-                    break; // while loop
-                }
-
-                buffer.clear();
 
             } // while()
 
-            try {
-				clientChannel.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		
+
         } // end-if
   	
-//        ByteBuffer bb = ByteBuffer.allocate(1024);
-//        try {
-//			
-//			int bytesRead = result.read(bb).get(10, TimeUnit.SECONDS);
-//			while (bytesRead != -1) {
-//
-//		        System.out.println("Message from client: " + new String(bb.array()));
-//				bytesRead = result.read(bb).get(10, TimeUnit.SECONDS);;
-//
-//		      	}
-//	        bb.clear();
-//			bb.flip();
-//			bb.put("Ok".getBytes());// this row has a problem
-//			bb.flip();
-//
-//
-//
-//		} catch (InterruptedException | ExecutionException | TimeoutException e) {
-//			e.printStackTrace();
-//		};
-//        System.out.println(new String(bb.array()));
     }
 
+	private static String String(byte[] array) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

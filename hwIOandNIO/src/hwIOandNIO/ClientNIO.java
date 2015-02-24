@@ -1,5 +1,7 @@
 package hwIOandNIO;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Future;
 import java.nio.channels.AsynchronousSocketChannel;
@@ -24,24 +26,29 @@ public class ClientNIO {
 
         System.out.println("Client is started: " + client.isOpen());
         System.out.println("Sending messages to server: ");
-		
-        String [] messages = new String [] {"Time goes fast.", "What now?", "Bye."};
-		
-        for (int i = 0; i < messages.length; i++) {
-		
-            byte [] message = new String(messages [i]).getBytes();
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        while (true) {
+			String in = br.readLine();
+			if (in.equalsIgnoreCase("exit")) {return;}
+            byte [] message = in.getBytes();
             ByteBuffer buffer = ByteBuffer.wrap(message);
             Future<Integer> result = client.write(buffer);
 		
             while (! result.isDone()) {
-                System.out.println("... ");
+                System.out.println("Sending... ");
             }
-		
-            System.out.println(messages [i]);
+            buffer.flip();
+            result = client.read(buffer); 
+            while (! result.isDone()) {
+                System.out.println("Waiting answer... ");
+            }
+         
+            System.out.println(new String(buffer.array()).trim()); 
             buffer.clear();
-            Thread.sleep(3000);
-		} // for
-		
-		client.close();
+ //           Thread.sleep(3000);
+		}
+ 		
+	//	client.close();
 	}
 }

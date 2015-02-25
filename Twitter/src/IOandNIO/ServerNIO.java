@@ -36,7 +36,7 @@ public class ServerNIO {
 	private static void startServer(int i) {
 		try {
 			AsynchronousChannelGroup group = AsynchronousChannelGroup.withThreadPool(Executors.newSingleThreadExecutor());
-			AsynchronousServerSocketChannel server =
+			final AsynchronousServerSocketChannel server =
 				    AsynchronousServerSocketChannel.open(group).bind(new InetSocketAddress(i));
 
 	           System.out.println("Server listening on " + port);
@@ -76,11 +76,11 @@ public class ServerNIO {
 
         if ((clientChannel != null) && (clientChannel.isOpen())) {
         
-            ByteBuffer buffer = ByteBuffer.allocate(100);
+            ByteBuffer buffer = ByteBuffer.allocate(1000);
             
             Future<Integer> result = clientChannel.read(buffer);
  //           while (true) {
-            int bytesRead = 0;
+            int bytesRead = -1;
 			try {
 				bytesRead = result.get(10,TimeUnit.SECONDS);
 				System.out.println(bytesRead);
@@ -91,27 +91,29 @@ public class ServerNIO {
             while (bytesRead != -1) {
 
 
-                while (! result.isDone()) {
-                    // do nothing
-                }
-                
+//                while (! result.isDone()) {
+//                    // do nothing
+//                }
+            	buffer.flip();
                 String clientString = new String(buffer.array()).trim();
                 System.out.println(clientString); 
-                buffer.flip();
+                
+                buffer.clear();
                 buffer = ByteBuffer.wrap(("Serv: "+clientString).getBytes());
                 result = clientChannel.write(buffer);
  //               System.out.println(new String(buffer.array()).trim()); 
-                while (! result.isDone()) {
-                    // do nothing
-                }    
-                
-                buffer.clear(); //make buffer ready for writing
+//                while (! result.isDone()) {
+//                    // do nothing
+//                }    
+//                
+      //          buffer.clear(); //make buffer ready for writing
                 
                 try {
 					bytesRead = clientChannel.read(buffer).get();
 				} catch (InterruptedException | ExecutionException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					break;
 				}
 
 

@@ -31,7 +31,7 @@ public class ClientNIO {
 
         while (true) {
 			String in = br.readLine();
-			if (in.equalsIgnoreCase("exit")) {return;}
+			if (in.equalsIgnoreCase("exit")) {break;}
             byte [] message = in.getBytes();
             ByteBuffer buffer = ByteBuffer.wrap(message);
             Future<Integer> result = client.write(buffer);
@@ -39,18 +39,18 @@ public class ClientNIO {
             while (! result.isDone()) {
                 System.out.println("Sending... ");
             }
-            buffer.flip();
+            buffer.clear();
             result = client.read(buffer); 
             while (! result.isDone()) {
                 System.out.println("Waiting answer... ");
             }
-         
+            buffer.flip();
             System.out.println(new String(buffer.array()).trim()); 
-            buffer.clear();
+           // buffer.clear();
  //           Thread.sleep(3000);
 		}
  		
-	//	client.close();
+		client.close();
  		
 	}
 }

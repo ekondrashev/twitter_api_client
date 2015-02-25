@@ -1,4 +1,4 @@
-package hwIOandNIO;
+package IOandNIO;
 
 
 import java.io.IOException;

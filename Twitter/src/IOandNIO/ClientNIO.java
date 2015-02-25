@@ -1,4 +1,5 @@
-package hwIOandNIO;
+package IOandNIO;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -50,5 +51,6 @@ public class ClientNIO {
 		}
  		
 	//	client.close();
+ 		
 	}
 }

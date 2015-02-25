@@ -14,9 +14,10 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class ServerNIOSelector {
-	private final static ByteBuffer buffer = ByteBuffer.allocate(16384);
 
 	public static void main(String[] args) {
+		System.out.println("Server start! ");
+
 		try {
 			ServerSocketChannel ssc = ServerSocketChannel.open();
 			ssc.configureBlocking(false);
@@ -113,24 +114,28 @@ public class ServerNIOSelector {
 	}
 
 	private static boolean processInput(SocketChannel sc) throws IOException {
+		ByteBuffer buffer = ByteBuffer.allocate(16384);
 		buffer.clear();
-		sc.read(buffer);
+		int res = -1;
+		res = sc.read(buffer);
 	
-	
-		// If no data, close the connection
-		if (buffer.limit() == 0) {
-			return false;
-		}
 		
+//		
+//		while (res !=-1) {
+//			
+//		}
+		
+		String str = new String(buffer.array());
+		System.out.println(str);
 		
 		buffer.flip();
 
-		buffer.wrap("Data is read.".getBytes());
+		buffer.wrap(("Data is read: "+str).getBytes());
 		
-
+//		buffer.flip();
 		sc.write(buffer);
 
-		//System.out.println("Processed " + buffer.limit() + " from " + sc);
+		System.out.println("Processed " + buffer.limit() + " from " + sc);
 
 		return true;
 	}
